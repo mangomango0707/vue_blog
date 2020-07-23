@@ -4,6 +4,8 @@ import VueRouter from 'vue-router'
 import Login from '../components/Login.vue'
 import Home from '../components/Home.vue'
 import Register from '../components/Register.vue'
+import Manage from '../components/admin/Manage.vue'
+import Users from '../components/admin/users/Users.vue'
 
 Vue.use(VueRouter)
 
@@ -15,6 +17,14 @@ const routes = [
     { path: '/home/login', component: Login },
     { path: '/home', component: Home },
     { path: '/home/register', component: Register },
+    {
+        path: '/admin/manage',
+        component: Manage,
+        children: [
+            { path: '/admin/users', component: Users }
+        ]
+    },
+
 ]
 
 const router = new VueRouter({

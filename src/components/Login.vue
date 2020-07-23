@@ -68,8 +68,18 @@ export default {
                 if(res.data.code !== 1){
                     return this.$message.error('登录失败');
                 }
+                console.log(res);
                 this.$message.success('登录成功');
-                this.$router.push("/home");
+
+                // 将服务端返回的token保存到sessionStorage中
+                window.sessionStorage.setItem("token", res.data.token);
+
+                // 根据用户身份：管理员或普通用户，跳转到相应页面
+                if(res.data.data.role === 'admin'){
+                    this.$router.push("/admin/manage");
+                }else{
+                    this.$router.push("/home");
+                }
             })
         },
         resetLoginForm() {
