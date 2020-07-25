@@ -55,7 +55,7 @@ export default {
     data() {
         return {
             // 激活的状态路径
-            activePath: '1',
+            activePath: '',
             isCollapse: false,
             menuList: [
                 {
@@ -79,6 +79,11 @@ export default {
                             id: 21,
                             authName: "文章列表",
                             path: "admin/articles",
+                        },
+                        {
+                            id: 22,
+                            authName: "添加文章",
+                            path: "admin/addArticles",
                         }
                     ]
                 }

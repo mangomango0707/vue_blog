@@ -6,6 +6,8 @@ import Home from '../components/Home.vue'
 import Register from '../components/Register.vue'
 import Manage from '../components/admin/Manage.vue'
 import Users from '../components/admin/users/Users.vue'
+import Articles from '../components/admin/articles/Articles.vue'
+import AddArticles from '../components/admin/articles/AddArticles.vue'
 
 Vue.use(VueRouter)
 
@@ -21,7 +23,9 @@ const routes = [
         path: '/admin/manage',
         component: Manage,
         children: [
-            { path: '/admin/users', component: Users }
+            { path: '/admin/users', component: Users },
+            { path: '/admin/articles', component: Articles },
+            { path: '/admin/addArticles', component: AddArticles }
         ]
     },
 
@@ -29,6 +33,21 @@ const routes = [
 
 const router = new VueRouter({
     routes
+})
+
+// 挂载路由导航守卫
+router.beforeEach((to, from, next) => {
+    // to代表将要访问的
+    // from代表从哪个地方来的
+    // next():代表放行 next('/login'):代表强制跳转
+    if (to.path === '/home/login' || to.path === '/home/register') {
+        return next();
+    }
+    const token = window.sessionStorage.getItem('token');
+    if (!token) {
+        return next('/home/login');
+    }
+    next();
 })
 
 export default router
