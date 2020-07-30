@@ -6,7 +6,10 @@
               <img src="../../assets/mango.png" alt="">
               <span>Mango博客后台管理系统</span>
           </div>
-          <el-button type="info" @click="logout">退出</el-button>
+          <div>
+            <el-button type="primary" @click="goHome">博客首页</el-button>
+            <el-button type="info" @click="logout">退出</el-button>
+          </div>
       </el-header>
       <!-- 页面主体区域 -->
       <el-container>
@@ -95,6 +98,10 @@ export default {
         }
     },
     methods: {
+        // 跳转到博客首页
+        goHome() {
+            this.$router.push('/home/articlesHome');
+        },
         // 退出
         logout() {
             // 销毁token

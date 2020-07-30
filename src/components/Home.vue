@@ -1,13 +1,40 @@
 <template>
   <div class="box">
     <el-container class="containerBox">
-      <el-header class="header"></el-header>
-      <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal"
-              background-color="#8AADCB" text-color="#fff" active-text-color="#ffd04b">
+      <el-header class="header">
+        <div class="headNav">
+          <router-link to="/home/articlesHome">
+            <div class="logo">
+              <img src="../assets/mango.png" alt="">
+              <span>Mango博客</span>
+            </div>
+          </router-link>
+          <div class="user-btn">
+            <el-col :span="12">
+              <div class="user">
+                <div class="block">
+                  <el-avatar size="large" :src="URL"></el-avatar>
+                </div>
+                <span>{{userInfo.username}}</span>
+              </div>
+            </el-col>
+            <el-button @click="logout">退出</el-button>
+          </div>
+          
+        </div>
+          <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal"
+              background-color="rgba(255,255,255,0)" text-color="#fff" active-text-color="#ffd04b">
               <el-menu-item index="0" @click="saveNavState(paths[0])">首页</el-menu-item>
               <el-menu-item index="1" @click="saveNavState(paths[1])">随笔</el-menu-item>
               <el-menu-item index="2" @click="saveNavState(paths[2])">个人信息</el-menu-item>
         </el-menu>
+      </el-header>
+      <!-- <el-menu :default-active="activeIndex2" class="el-menu-demo" mode="horizontal"
+              background-color="#8AADCB" text-color="#fff" active-text-color="#ffd04b">
+              <el-menu-item index="0" @click="saveNavState(paths[0])">首页</el-menu-item>
+              <el-menu-item index="1" @click="saveNavState(paths[1])">随笔</el-menu-item>
+              <el-menu-item index="2" @click="saveNavState(paths[2])">个人信息</el-menu-item>
+        </el-menu> -->
       <el-container class="container">
         <!-- 路由占位符 -->
         <router-view></router-view>
@@ -21,6 +48,7 @@
 export default {
   created() {
     this.getArticleList();
+    this.getUserInfo();
     this.activePath = window.sessionStorage.getItem("activePath");
     // this.getPic();
   },
@@ -47,6 +75,11 @@ export default {
         articleList: [],
         // 文章总数
         total: 0,
+
+        // 登录用户信息
+        userInfo: {},
+        // 图片地址
+        URL: '',
       }
     },
     methods: {
@@ -77,7 +110,28 @@ export default {
             window.sessionStorage.setItem("activePath", activePath);
             this.activePath = activePath;
             this.$router.push(this.activePath);
-        }
+        },
+
+        // 退出
+        logout() {
+            // 销毁token
+            window.sessionStorage.clear();
+            // 跳转到登录页面
+            this.$router.push('/home/login');
+        },
+
+        async getUserInfo() {
+            // 根据id查询用户信息
+            const id = window.sessionStorage.getItem('userId');
+            const res = await this.$http.get('admin/findUser/' + id);
+            console.log(res);
+            if(res.status !== 200){
+              return this.$message.error('查询用户信息失败！');
+            }
+            this.userInfo = res.data.data;
+            this.URL = 'http://localhost:8081/public'+this.userInfo.avatar;
+            this.baseURL = 'http://localhost:8081/admin/editAvatar/'+this.userInfo._id;
+        },
     },
   };
 </script>
@@ -93,22 +147,72 @@ export default {
 .container {
   width: 1000px;
   margin: 0 auto!important;
+  padding-top: 20px;
   justify-content: center;
 }
-// .header {
-//   // background-image: url('../assets/bc01.jpg');
-//   height: 300px;
-//   line-height: 300px;
-//   color: #333;
-//   text-align: center;
-// }
   .el-header{
-    background-image: url('../assets/bc03.jpg');
+    position: relative;
+    width: 100%;
+    padding: 0;
+    background-image: url('../assets/bc001.jpg');
     // background-color: #B3C0D1;
     color: #333;
     text-align: center;
-    height: 300px !important;
-    line-height: 300px;
+    height: 350px !important;
+    line-height: 350px;
+    .headNav {
+      width: 100%;
+      height: 50px;
+      background-color: #8AADCB;
+      display: flex;
+      justify-content: space-between;
+      padding-left: 0;
+      color: #ffffff;
+      align-items: center;
+      font-size: 20px;
+      .logo {
+        height: 50px;
+        display: flex;
+        align-items: center;
+        line-height: 50px;
+        img {
+            width: 100px;
+            height: 60px;
+        }
+        span {
+          height: 50px;
+            margin-left: 8px;
+            color: #fff!important;
+        }
+      }
+
+      .el-button {
+        background-color: #8AADCB;
+        color: #fff;
+        margin-right: 20px;
+      }
+    }
+    
+  }
+
+  .user-btn {
+    margin-right: 50px;
+    height: 50px;
+    line-height: 50px;
+    width: 250px;
+    align-items: center;
+  }
+  .block {
+    float: left;
+    height: 50px;
+    display: flex;
+    line-height: 50px;
+    align-items: center;
+  }
+  .user {
+    height: 50px;
+    line-height: 50px;
+    align-items: center;
   }
    .el-footer{
     background-color: #B3C0D1;
@@ -116,121 +220,28 @@ export default {
     text-align: center;
     line-height: 60px;
     bottom: 0;
-    margin-top: 80px;
+    margin-top: 250px;
   }
-  
-  // .el-aside {
-  //   width: 250px!important;
-  //   // background-color: #D3DCE6;
-  //   color: #333;
-  //   text-align: center;
-  //   line-height: 0;
-  //   padding-top: 30px;
-  // }
 
-  // .el-col {
-  //   height: 50px!important;
-  // }
-  // .el-divider {
-  //   margin: 2px 0;
-  // }
   .search {
     span {
       color: #8AADCB;
     }
   }
   
-  // .el-main {
-  //   // background-color: #E9EEF3;
-  //   color: #333;
-  //   text-align: center;
-  //   line-height: 160px;
-  // }
   .el-menu {
+    position: absolute;
+    bottom: 0;
+    background-color: rgba(255,255,255,0);
     // display: block;
-    padding-left: 770px;
+    padding-left: 690px;
+    // font-size: 30px;
   }
   .el-menu-item {
-    padding: 0 40px!important;
+    padding: 0 60px!important;
+    font-size: 18px;
+    // 字体样式
+    // font:italic 1em Georgia, serif;
   }
-// .articles {
-//   display: block;
-//   height: 300px;
-// }
-// .title {
-//   height: 30px;
-//   a {
-//     height: 30px;
-//   }
-// }
-// .content {
-// }
-// .author {
-//   display: inline-block;
-// }
-// .publishDate {
-//   display: inline-block;
-// }
 
-// // 卡片
-// .el-card {
-//   margin: 5px 0;
-//   height: 100px;
-// }
-// a {
-//   color: black;
-// }
-// .detail {
-//   // height: 100px!important;
-//   line-height: 0px;
-// }
-// .title{
-//   padding-top: 10px;
-//   text-align: left;
-//   // margin-left: -20px;
-//   // margin-left: 0;
-//   // display: block;
-//   // span {
-//   //   display: inline-block;
-//   // }
-// }
-// .author{
-//   float: left;
-//   // text-align: left!important;
-//   color: #8AADCB;
-// }
-// .date {
-//   text-align: right;
-// }
-
-//  .time {
-//     font-size: 13px;
-//     color: #999;
-//   }
-  
-//   .bottom {
-//     margin-top: 13px;
-//     line-height: 12px;
-//   }
-
-//   .button {
-//     padding: 0;
-//     float: right;
-//   }
-
-//   .image {
-//     width: 100%;
-//     height: 200px;
-//     display: block;
-//   }
-
-//   .clearfix:before,
-//   .clearfix:after {
-//       display: table;
-//       content: "";
-//   }
-  
-//   .clearfix:after {
-//       clear: both
-//   }
 </style>

@@ -130,7 +130,7 @@ export default {
         return {
           // 登录用户信息
             userInfo: {},
-            // 图片地址前缀
+            // 图片地址
             URL: '',
             // 修改用户表单
             editForm: this.userInfo,
