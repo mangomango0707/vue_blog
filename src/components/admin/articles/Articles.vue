@@ -183,7 +183,7 @@ export default {
             this.$message.success('修改文章成功！');
           });
         },
-        // 删除用户
+        // 删除文章
         async deleteArticle(id) {
           const confirmResult = await this.$confirm('确定删除该文章吗？', '提示', {
             confirmButtonText: '确定',

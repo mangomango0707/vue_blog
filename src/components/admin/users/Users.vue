@@ -64,6 +64,18 @@
               <el-form-item label="密码" prop="password">
                   <el-input v-model="addForm.password" placeholder="请输入密码" type="password"></el-input>
               </el-form-item>
+              <!-- 用户头像上传 -->
+              <el-form-item label="头像">
+                <!-- <el-upload class="avatar-uploader"
+                  action="http://127.0.0.1:8081/admin/addUser" :show-file-list="false" ref="upload" 
+                  :on-success="handleAvatarSuccess">
+                  <img v-if="addForm.avatar" :src="addForm.avatar" class="avatar">
+                  <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                </el-upload> -->
+                <el-upload action="http://127.0.0.1:8081/admin/addUser" :http-request="addUser" ref="upload" :auto-upload="false">
+                      <el-button size="small" type="primary">点击上传</el-button>
+                  </el-upload>
+              </el-form-item>
               <el-form-item label="角色">
                   <el-select v-model="addForm.role" clearable placeholder="请选择用户角色">
                     <el-option v-for="item in roleOptions" :key="item.value" :label="item.label"
@@ -137,6 +149,7 @@ export default {
         username: '',
         email: '',
         password: '',
+        avatar: '',
         role: ''
       },
       addFormRules: {
@@ -183,7 +196,9 @@ export default {
         role: [
           { required: true, message: '请选择角色', trigger: 'blur' },
         ]       
-      }
+      },
+      // 图片地址前缀
+      baseURL: 'http://localhost:8081/public'
 
     }
   },
@@ -226,22 +241,43 @@ export default {
       // 重置表单
       this.$refs.addFormRef.resetFields();
       this.addForm.role = '';
+      this.addForm.avatar = '';
     },
     // 添加用户
-    async addUser() {
+    addUser() {
+
+      var formData = new FormData();
+      var file = this.$refs.upload.uploadFiles[0];
+      var headerConfig = {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            };
+      console.log(file);
+
+      formData.append('file', file.raw);
+      formData.append('username', this.addForm.username);
+      formData.append('email', this.addForm.email);
+      formData.append('password', this.addForm.password);
+      formData.append('role', this.addForm.role);
+
+      // console.log(formData.get('file'));
       // 先进行预校验
             this.$refs.addFormRef.validate(async valid => {
                 // 校验不通过
                 if(!valid){
                     return;
                 }
+                console.log(this.addForm);
                 // 校验通过，发送请求
-                const res = await this.$http.post('admin/addUser', this.addForm);
+                const res = await this.$http.post('admin/addUser', formData, headerConfig);
                 console.log(res);
                 if(res.data.code !== 1){
                     return this.$message.error('添加用户失败');
                 }
                 this.$message.success('添加用户成功');
+                formData.set('file', '');
+                file = null;
                 this.addDialogVisible = false;
                 this.getUserList();
             });
@@ -302,7 +338,7 @@ export default {
 
       this.$message.success('删除用户成功！');
       this.getUserList();
-    }
+    },
   }
 }
 </script>
@@ -322,4 +358,28 @@ export default {
 .el-select {
   width: 100%;
 }
+// 头像上传
+.avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 178px;
+    height: 178px;
+    line-height: 178px;
+    text-align: center;
+  }
+  .avatar {
+    width: 178px;
+    height: 178px;
+    display: block;
+  }
 </style>

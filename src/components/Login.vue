@@ -73,6 +73,8 @@ export default {
 
                 // 将服务端返回的token保存到sessionStorage中
                 window.sessionStorage.setItem("token", res.data.token);
+                // 保存用户id
+                window.sessionStorage.setItem("userId", res.data.data._id);
 
                 // 根据用户身份：管理员或普通用户，跳转到相应页面
                 if(res.data.data.role === 'admin'){
@@ -89,6 +91,12 @@ export default {
         // 转到注册页面
         goRegister() {
             this.$router.push('/home/register');
+        },
+        async getUserInfo() {
+            const res = await this.$http.get('admin/getUserInfo');
+            console.log(res);
+            // this.userInfo = res.data;
+            window.sessionStorage.setItem("username", res.data.username);
         }
     }
 }

@@ -14,8 +14,8 @@
               <el-form-item label="标题" prop="title">
                   <el-input v-model="addForm.title"></el-input>
               </el-form-item>
-              <el-form-item label="作者" prop="author">
-                  <el-input v-model="addForm.author"></el-input>
+              <el-form-item label="作者" prop="authorName">
+                  <el-input v-model="addForm.authorName"></el-input>
               </el-form-item>
               <el-form-item label="发布时间">
                   <el-input type="date" v-model="addForm.publishDate"></el-input>
@@ -77,7 +77,7 @@ export default {
             // 添加文章表单
             addForm: {
                 title: '',
-                author: '',
+                authorName: '',
                 publishDate: '',
                 pic: '',
                 content: ''
@@ -86,7 +86,7 @@ export default {
                 title: [
                     { required: true, message: '请输入标题', trigger: 'blur' }
                 ],
-                author: [
+                authorName: [
                     { required: true, message: '请输入作者', trigger: 'blur' }
                 ]
             },
@@ -135,15 +135,15 @@ export default {
                     "Content-Type": "multipart/form-data"
                 }
             };
-            if(!file){
-                alert('请上传文件！');
-                return;
-            }
+            // if(!file){
+            //     alert('请上传文件！');
+            //     return;
+            // }
             // console.log(this.addForm);
             // console.log(file);
             formData.append('file', file.raw);
             formData.append('title', this.addForm.title);
-            formData.append('author', this.addForm.author);
+            formData.append('authorName', this.addForm.authorName);
             formData.append('publishDate', this.addForm.publishDate);
             formData.append('content', this.addForm.content);
 

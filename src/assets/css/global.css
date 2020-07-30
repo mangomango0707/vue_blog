@@ -9,6 +9,10 @@ body,
     min-width: 1366px;
 }
 
+a {
+    text-decoration: none;
+}
+
 
 /* 解决elementy-ui级联选择器选项内容高度溢出的问题 */
 

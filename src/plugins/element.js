@@ -40,9 +40,15 @@ import {
     Upload,
     Timeline,
     TimelineItem,
-    Link
+    Link,
+    Footer,
+    Divider,
+    Avatar
 } from 'element-ui'
 
+Vue.use(Avatar)
+Vue.use(Footer)
+Vue.use(Divider)
 Vue.use(Button)
 Vue.use(Form)
 Vue.use(FormItem)

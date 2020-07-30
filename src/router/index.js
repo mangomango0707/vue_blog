@@ -8,16 +8,29 @@ import Manage from '../components/admin/Manage.vue'
 import Users from '../components/admin/users/Users.vue'
 import Articles from '../components/admin/articles/Articles.vue'
 import AddArticles from '../components/admin/articles/AddArticles.vue'
+import ArticlesHome from '../components/home/ArticlesHome.vue'
+import ArticleDetail from '../components/home/ArticleDetail.vue'
+import AboutUser from '../components/home/AboutUser.vue'
+import AllArticles from '../components/home/AllArticles.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
     // 实现访问根路径/,即重定向到登录页面
-    { path: '/', redirect: '/home/login' }, ,
-    { path: '/home', component: Home },
+    { path: '/', redirect: '/home/login' },
+    { path: '/home', redirect: '/home/articlesHome' },
     // 匹配规则：当用户访问/login路径时，渲染Login组件
     { path: '/home/login', component: Login },
-    { path: '/home', component: Home },
+    {
+        path: '/home',
+        component: Home,
+        children: [
+            { path: '/home/articlesHome', component: ArticlesHome },
+            { path: '/home/articleDetail/:id', component: ArticleDetail },
+            { path: '/home/allArticles', component: AllArticles },
+            { path: '/home/aboutUser', component: AboutUser }
+        ]
+    },
     { path: '/home/register', component: Register },
     {
         path: '/admin/manage',
@@ -49,5 +62,11 @@ router.beforeEach((to, from, next) => {
     }
     next();
 })
+
+// 解决ElementUI导航栏中的vue-router在3.0版本以上重复点菜单报错问题
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
 
 export default router

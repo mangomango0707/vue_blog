@@ -25,6 +25,9 @@ axios.interceptors.request.use(config => {
     return config;
 })
 
+// 允许跨域携带session信息
+// axios.defaults.withCredentials = true;
+
 // 将这个包挂载到vue的原型对象上，每个vue组件可以通过this直接访问到http直接发送请求
 Vue.prototype.$http = axios;
 
@@ -42,11 +45,12 @@ Vue.filter('dateFormat', function(originVal) {
     const y = dt.getFullYear();
     const m = (dt.getMonth() + 1 + '').padStart(2, '0');
     const d = (dt.getDate() + '').padStart(2, '0');
-    const hh = (dt.getHours() + '').padStart(2, '0');
-    const mm = (dt.getMinutes() + '').padStart(2, '0');
-    const ss = (dt.getSeconds() + '').padStart(2, '0');
+    // const hh = (dt.getHours() + '').padStart(2, '0');
+    // const mm = (dt.getMinutes() + '').padStart(2, '0');
+    // const ss = (dt.getSeconds() + '').padStart(2, '0');
 
-    return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+    // return `${y}-${m}-${d} ${hh}:${mm}:${ss}`;
+    return `${y}-${m}-${d}`;
 })
 
 // 将富文本编辑器注册为全局可用的组件
