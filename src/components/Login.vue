@@ -38,8 +38,8 @@ export default {
     data() {
         return {
             loginForm: {
-                email: 'admin@163.com',
-                password: '123456'
+                email: '',
+                password: ''
             },
             loginFormRules: {
                 email: [

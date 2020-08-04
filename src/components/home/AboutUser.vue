@@ -123,6 +123,8 @@
 
 <script>
 export default {
+    // 注入reload刷新依赖
+    inject: ['reload'],
     created() {
         this.getUserInfo();
     },
@@ -210,7 +212,9 @@ export default {
               }
               
               this.$message.success('修改数据成功！');
-              this.$router.push('/home/aboutUser');
+              // this.$router.push('/home/aboutUser');
+              // 刷新页面
+              this.reload();
           });
         },
         editDialogClosed() {
@@ -241,6 +245,8 @@ export default {
             }
           this.getUserInfo();
           this.editDialogVisible = false;
+          // 刷新页面
+          this.reload();
         },
         // 切换tab栏， 即根据用户id查询文章，并重置发布文章表单
         async getArticlesByUserId(id) {
